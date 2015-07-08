@@ -1,0 +1,21 @@
+{
+    "name": "simpleid-module-installer",
+    "type": "composer-plugin",
+    "description": "An installer for SimpleID modules.",
+    "require": {
+        "composer-plugin-api": "1.0.0"
+    },
+    "license": "GPL-2.0+",
+    "authors": [
+        {
+            "name": "Kelvin Mo",
+            "email": "kmo@users.sourceforge.net"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "SimpleID\\Composer\\": "src/" }
+    },
+    "extra": {
+        "class": "SimpleID\\Composer\\ModuleInstallerPlugin"
+    }
+}

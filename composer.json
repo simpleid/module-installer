@@ -1,7 +1,7 @@
 {
-    "name": "simpleid/simpleid-module-installer",
+    "name": "simpleid/module-installer",
     "type": "composer-plugin",
-    "description": "An installer for SimpleID modules.",
+    "description": "A Composer installer plugin for SimpleID modules.",
     "require": {
         "composer-plugin-api": "1.0.0"
     },

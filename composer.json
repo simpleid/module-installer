@@ -3,7 +3,7 @@
     "type": "composer-plugin",
     "description": "A Composer installer plugin for SimpleID modules.",
     "require": {
-        "composer-plugin-api": "1.0.0"
+        "composer-plugin-api": "^1.0"
     },
     "license": "GPL-2.0+",
     "authors": [

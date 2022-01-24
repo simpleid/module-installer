@@ -17,5 +17,11 @@
     },
     "extra": {
         "class": "SimpleID\\Composer\\ModuleInstallerPlugin"
+    },
+    "require-dev": {
+        "consolidation/robo": "^3.0"
+    },
+    "scripts": {
+        "update-copyright": [ "@composer install", "robo update_copyright" ]
     }
 }

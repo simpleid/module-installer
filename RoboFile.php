@@ -8,7 +8,7 @@ use Symfony\Component\Finder\Finder;
  * @see https://robo.li/
  */
 class RoboFile extends \Robo\Tasks {
-    public function tests() {
+    public function test() {
         $workspace_dir = 'tests/integration/workspace';
         $composer_json = 'tests/integration/composer.site.json';
 

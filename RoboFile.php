@@ -15,7 +15,7 @@ class RoboFile extends \Robo\Tasks {
         $collection = $this->collectionBuilder();
 
         // 1. Clean workspace directory
-        $collection->taskDeleteDir([$workspace_dir])->run();
+        $collection->taskCleanDir([$workspace_dir])->run();
 
         // 2. Install base SimpleID
         $collection->taskComposerCreateProject()

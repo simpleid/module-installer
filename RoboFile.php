@@ -8,6 +8,45 @@ use Symfony\Component\Finder\Finder;
  * @see https://robo.li/
  */
 class RoboFile extends \Robo\Tasks {
+    public function tests() {
+        $workspace_dir = 'tests/integration/workspace';
+        $composer_json = 'tests/integration/composer.site.json';
+
+        $collection = $this->collectionBuilder();
+
+        // 1. Clean workspace directory
+        $collection->taskDeleteDir([$workspace_dir])->run();
+
+        // 2. Install base SimpleID
+        $collection->taskComposerCreateProject()
+            ->source('simpleid/simpleid:dev-master')
+            ->target($workspace_dir)
+            ->noDev()
+            ->run();
+
+        // 3. Update composer.json to add local repository
+        $collection->taskFilesystemStack()
+            ->copy($composer_json, $workspace_dir . '/composer.site.json')
+            ->run();
+
+        // 4. Update minimum-stability in root composer.json
+        $collection->addCode(function() use ($workspace_dir) {
+            $root_composer_json = $workspace_dir . '/composer.json';
+            $root_composer = json_decode(file_get_contents($root_composer_json), true);
+            $root_composer['minimum-stability'] = 'dev';
+            $root_composer['prefer-stable'] = true;
+            file_put_contents($root_composer_json, json_encode($root_composer));
+        });
+
+        // 5. Try installing the test module
+        $collection->taskComposerUpdate()
+            ->workingDir($workspace_dir)
+            ->noDev()
+            ->run();
+
+        return $collection->run();
+    }
+
     public function update_copyright() {
         $current_year = strftime("%Y");
 

@@ -1,0 +1,12 @@
+{
+    "name": "simpleid/simpleid-test",
+    "type": "simpleid-module",
+    "require": {
+        "simpleid/module-installer": "@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "SimpleID\\Modules\\TestModule\\": "src/TestModule/"
+        }
+    }
+}

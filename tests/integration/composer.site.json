@@ -1,0 +1,15 @@
+{
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../simpleid-test-module"
+        },
+        {
+            "type": "path",
+            "url": "../../.."
+        }
+    ],
+    "require": {
+        "simpleid/simpleid-test": "@dev"
+    }
+}

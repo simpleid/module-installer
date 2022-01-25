@@ -51,7 +51,7 @@ class RoboFile extends \Robo\Tasks {
         $colleciton->addCode(function() use ($workspace_dir) {
             $expected_file = $workspace_dir . '/site/test/src/TestModule/TestModule.php';
             if (!file_exists($expected_file)) return 1;
-        })
+        });
 
         return $collection->run();
     }

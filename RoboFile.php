@@ -15,7 +15,10 @@ class RoboFile extends \Robo\Tasks {
         $collection = $this->collectionBuilder();
 
         // 1. Clean workspace directory
-        $collection->taskDeleteDir([$workspace_dir])->run();
+        $collection->taskFilesystemStack()
+            ->remove($workspace_dir . '/.gitignore')
+            ->run();
+        $collection->taskCleanDir([$workspace_dir])->run();
 
         // 2. Install base SimpleID
         $collection->taskComposerCreateProject()
@@ -43,6 +46,12 @@ class RoboFile extends \Robo\Tasks {
             ->workingDir($workspace_dir)
             ->noDev()
             ->run();
+
+        // 6. See if module exists in the right location
+        $collection->addCode(function() use ($workspace_dir) {
+            $expected_file = $workspace_dir . '/site/test/src/TestModule/TestModule.php';
+            if (!file_exists($expected_file)) return 1;
+        });
 
         return $collection->run();
     }

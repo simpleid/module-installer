@@ -26,7 +26,7 @@ use Composer\Package\PackageInterface;
 use Composer\Installer\LibraryInstaller;
 
 class ModuleInstaller extends LibraryInstaller {
-    public function getPackageBasePath(PackageInterface $package) {
+    public function getInstallPath(PackageInterface $package) {
         if (strpos($package->getPrettyName(), '/simpleid-') === false) {
             throw new \InvalidArgumentException('SimpleID modules have package names containing simpleid-');
         }

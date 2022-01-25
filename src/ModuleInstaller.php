@@ -32,7 +32,7 @@ class ModuleInstaller extends LibraryInstaller {
         }
 
         $subdir = substr($package->getPrettyName(), strpos($package->getPrettyName(), '/simpleid-') + 10);
-        return 'site/' . $subdir;
+        return 'www/site/' . $subdir;
     }
 
     public function supports($packageType) {

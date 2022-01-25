@@ -49,7 +49,7 @@ class RoboFile extends \Robo\Tasks {
 
         // 6. See if module exists in the right location
         $collection->addCode(function() use ($workspace_dir) {
-            $expected_file = $workspace_dir . '/site/test/src/TestModule/TestModule.php';
+            $expected_file = $workspace_dir . '/www/site/test/src/TestModule/TestModule.php';
             if (!file_exists($expected_file)) return 1;
         });
 

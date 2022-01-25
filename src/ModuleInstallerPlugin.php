@@ -27,9 +27,25 @@ use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 
 class ModuleInstallerPlugin implements PluginInterface {
+
+    protected $installer;
+
     public function activate(Composer $composer, IOInterface $io) {
-        $installer = new ModuleInstaller($io, $composer);
-        $composer->getInstallationManager()->addInstaller($installer);
+        $this->installer = new ModuleInstaller($io, $composer);
+        $composer->getInstallationManager()->addInstaller($this->installer);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deactivate(Composer $composer, IOInterface $io) {
+        $composer->getInstallationManager->removeInstaller($this->installer);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function uninstall(Composer $composer, IOInterface $io) {
     }
 }
 

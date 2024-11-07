@@ -19,7 +19,7 @@
         "class": "SimpleID\\Composer\\ModuleInstallerPlugin"
     },
     "require-dev": {
-        "consolidation/robo": "^3.0"
+        "consolidation/robo": " ^3.0 || ^4.0"
     },
     "scripts": {
         "test": [ "@composer install", "robo test" ],

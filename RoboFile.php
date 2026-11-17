@@ -24,6 +24,7 @@ class RoboFile extends \Robo\Tasks {
         $collection->taskComposerCreateProject()
             ->source('simpleid/simpleid:dev-master')
             ->target($workspace_dir)
+            ->noInstall(true)
             ->noDev()
             ->run();
 
@@ -33,13 +34,14 @@ class RoboFile extends \Robo\Tasks {
             ->run();
 
         // 4. Update minimum-stability in root composer.json
-        $collection->addCode(function() use ($workspace_dir) {
-            $root_composer_json = $workspace_dir . '/composer.json';
-            $root_composer = json_decode(file_get_contents($root_composer_json), true);
-            $root_composer['minimum-stability'] = 'dev';
-            $root_composer['prefer-stable'] = true;
-            file_put_contents($root_composer_json, json_encode($root_composer));
-        });
+        $collection->taskComposerConfig()
+            ->workingDir($workspace_dir)
+            ->set('minimum-stability', 'dev')
+            ->run();
+        $collection->taskComposerConfig()
+            ->workingDir($workspace_dir)
+            ->set('prefer-stable', 'true')
+            ->run();
 
         // 5. Try installing the test module
         $collection->taskComposerUpdate()

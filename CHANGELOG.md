@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## Version 2.0.1
 
 - Changed: Updated dependencies and integration tests
 

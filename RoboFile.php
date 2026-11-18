@@ -59,10 +59,27 @@ class RoboFile extends \Robo\Tasks {
             ->noDev()
             ->run();
 
-        // 6. See if module exists in the right location
-        $collection->addCode(function() {
+        // 6. See if module exists in the right location and is part of
+        //    autoload
+        $collection->addCode(function() use ($io) {
             $expected_file = $this->workspace_dir . '/www/site/test/src/TestModule/TestModule.php';
-            if (!file_exists($expected_file)) return 1;
+            if (!file_exists($expected_file)) {
+                $io->error('Test module not installed');
+                return 1;
+            } else {
+                $io->success('Test module installed in expected location');
+            }
+        });
+
+        $collection->addCode(function() use ($io) {
+            $autoload_file = $this->workspace_dir . '/www/vendor/composer/autoload_psr4.php';
+            $autoloads = include($autoload_file);
+            if (!array_key_exists('SimpleID\\Modules\\TestModule\\', $autoloads)) {
+                $io->error('Test module not included in autoload');
+                return 1;
+            } else {
+                $io->success('Test module included in autoload');
+            }
         });
 
         return $collection->run();

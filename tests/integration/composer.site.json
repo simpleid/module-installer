@@ -2,11 +2,17 @@
     "repositories": [
         {
             "type": "path",
-            "url": "../simpleid-test-module"
+            "url": "../simpleid-test-module",
+            "options": {
+                "symlink": false
+            }
         },
         {
             "type": "path",
-            "url": "../../.."
+            "url": "../../..",
+            "options": {
+                "symlink": false
+            }
         }
     ],
     "require": {

@@ -22,6 +22,7 @@
         "consolidation/robo": " ^5.2.3"
     },
     "scripts": {
+        "clean": [ "@composer install", "robo clean" ],
         "test": [ "@composer install", "robo test" ],
         "update-copyright": [ "@composer install", "robo update_copyright" ]
     }

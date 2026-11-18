@@ -1,5 +1,6 @@
 <?php
 
+use Robo\Symfony\ConsoleIO;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -8,49 +9,77 @@ use Symfony\Component\Finder\Finder;
  * @see https://robo.li/
  */
 class RoboFile extends \Robo\Tasks {
-    public function test() {
-        $workspace_dir = 'tests/integration/workspace';
+    protected $workspace_dir = 'tests/integration/workspace';
+
+    public function clean() {
+        $collection = $this->collectionBuilder();
+
+        $collection->taskFilesystemStack()
+            ->remove($this->workspace_dir . '/.gitignore')
+            ->run();
+        $collection->taskCleanDir([$this->workspace_dir])->run();
+
+        return $collection->run();
+    }
+
+    public function test(ConsoleIO $io, $version = 'dev-master') {
         $composer_json = 'tests/integration/composer.site.json';
 
         $collection = $this->collectionBuilder();
 
         // 1. Clean workspace directory
-        $collection->taskFilesystemStack()
-            ->remove($workspace_dir . '/.gitignore')
-            ->run();
-        $collection->taskCleanDir([$workspace_dir])->run();
+        $this->clean();
 
         // 2. Install base SimpleID
         $collection->taskComposerCreateProject()
-            ->source('simpleid/simpleid:dev-master')
-            ->target($workspace_dir)
+            ->source('simpleid/simpleid:' . $version)
+            ->target($this->workspace_dir)
+            ->noInstall(true)
             ->noDev()
             ->run();
 
         // 3. Update composer.json to add local repository
         $collection->taskFilesystemStack()
-            ->copy($composer_json, $workspace_dir . '/composer.site.json')
+            ->copy($composer_json, $this->workspace_dir . '/composer.site.json')
             ->run();
 
         // 4. Update minimum-stability in root composer.json
-        $collection->addCode(function() use ($workspace_dir) {
-            $root_composer_json = $workspace_dir . '/composer.json';
-            $root_composer = json_decode(file_get_contents($root_composer_json), true);
-            $root_composer['minimum-stability'] = 'dev';
-            $root_composer['prefer-stable'] = true;
-            file_put_contents($root_composer_json, json_encode($root_composer));
-        });
+        $collection->taskComposerConfig()
+            ->workingDir($this->workspace_dir)
+            ->set('minimum-stability', 'dev')
+            ->run();
+        $collection->taskComposerConfig()
+            ->workingDir($this->workspace_dir)
+            ->set('prefer-stable', 'true')
+            ->run();
 
         // 5. Try installing the test module
         $collection->taskComposerUpdate()
-            ->workingDir($workspace_dir)
+            ->workingDir($this->workspace_dir)
             ->noDev()
             ->run();
 
-        // 6. See if module exists in the right location
-        $collection->addCode(function() use ($workspace_dir) {
-            $expected_file = $workspace_dir . '/www/site/test/src/TestModule/TestModule.php';
-            if (!file_exists($expected_file)) return 1;
+        // 6. See if module exists in the right location and is part of
+        //    autoload
+        $collection->addCode(function() use ($io) {
+            $expected_file = $this->workspace_dir . '/www/site/test/src/TestModule/TestModule.php';
+            if (!file_exists($expected_file)) {
+                $io->error('Test module not installed');
+                return 1;
+            } else {
+                $io->success('Test module installed in expected location');
+            }
+        });
+
+        $collection->addCode(function() use ($io) {
+            $autoload_file = $this->workspace_dir . '/www/vendor/composer/autoload_psr4.php';
+            $autoloads = include($autoload_file);
+            if (!array_key_exists('SimpleID\\Modules\\TestModule\\', $autoloads)) {
+                $io->error('Test module not included in autoload');
+                return 1;
+            } else {
+                $io->success('Test module included in autoload');
+            }
         });
 
         return $collection->run();
